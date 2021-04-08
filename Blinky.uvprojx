@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>Blinky3</OutputName>
+          <OutputName>ob0</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>.\code</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -383,9 +383,19 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>main2.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\main2.c</FilePath>
+              <FileName>obMain.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\obMain.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>AbstractIfcs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\code\AbstractIfcs.h</FilePath>
+            </File>
+            <File>
+              <FileName>GPOut.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\GPOut.cpp</FilePath>
             </File>
           </Files>
         </Group>
