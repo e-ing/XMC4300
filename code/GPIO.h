@@ -1,12 +1,12 @@
-#ifndef GPOUT_H
-#define GPOUT_H
+#ifndef GPIO_H
+#define GPIO_H
 
 #include <Bits.h>
 #include <AbstractIfcs.h>
 #include <XMC4300.h>
 
 //Everything you need to work with a general purpose output port XMC4300
-// GPOut.h v0-08.04.21
+// GPIO.h v0-09.04.21
 
 //#pragma pack(push, 1)
 struct PortGPIO
@@ -14,10 +14,11 @@ struct PortGPIO
 	unsigned long  OUT;                               // (@ 0xBASEX000) Port Output Register                  
   unsigned long  OMR;                               // (@ 0xBASEX004) Port Output Modification Register
   unsigned long  RESERVED[2];
-  unsigned long  IOCR0;                             // (@ 0xBASEX010) Port Input/Output Control Register 0
-  unsigned long  IOCR4;                             // (@ 0xBASEX014) Port Input/Output Control Register 4
-  unsigned long  IOCR8;                             // (@ 0xBASEX018) Port Input/Output Control Register 8 
-  unsigned long  IOCR12;                            // (@ 0xBASEX01C) Port Input/Output Control Register 12 
+  unsigned long  IOCR[4]; 
+//  unsigned long  IOCR0; 															// (@ 0xBASEX010) Port Input/Output Control Register 0
+//  unsigned long  IOCR4;                             // (@ 0xBASEX014) Port Input/Output Control Register 4
+//  unsigned long  IOCR8;                             // (@ 0xBASEX018) Port Input/Output Control Register 8 
+//  unsigned long  IOCR12;                            // (@ 0xBASEX01C) Port Input/Output Control Register 12 
   unsigned long  RESERVED1;
   unsigned long  IN;                                // (@ 0xBASEX024) Port Input Register 
   unsigned long  RESERVED2[6];
@@ -31,10 +32,42 @@ struct PortGPIO
 };
 //#pragma pack(pop)
 
-extern volatile PortGPIO* GPIOs [];// = {(PortGPIO*) PORT0_BASE, (PortGPIO*) PORT1_BASE, (PortGPIO*) PORT2_BASE, (PortGPIO*) PORT3_BASE,
+enum GPPORRTs
+{
+	GPP0,
+	GPP1,
+	GPP2,
+	GPP3,
+	GPP4,
+	GPP5,
+	GPP14,
+	GPP15,
+	GPPNUM
+};
+
+
+
+extern volatile PortGPIO* GPIOs [GPPNUM];// = {(PortGPIO*) PORT0_BASE, (PortGPIO*) PORT1_BASE, (PortGPIO*) PORT2_BASE, (PortGPIO*) PORT3_BASE,
 															 //(PortGPIO*) PORT4_BASE, (PortGPIO*) PORT5_BASE, (PortGPIO*) PORT14_BASE, (PortGPIO*) PORT15_BASE};
 
-//GPout and etc
+class GPin : public Abstract_iBit
+{
+protected:
+	volatile PortGPIO* port;
+	unsigned char pin;
+	unsigned long pinMaskIn;
+	virtual bool GetState();
+	virtual void ResetPin();
+public:
+	GPin(GPPORRTs portNum, unsigned char pinNum);
+	virtual void PullH();
+	virtual void PullD();
+	virtual void PushPull();
+	virtual void SetSpeed(unsigned int speed);
+	virtual ~GPin() {}
+};
+
+
 class GPOut : public   Abstract_oBit
 {
 protected:
@@ -48,7 +81,7 @@ protected:
 	virtual void SetValue( bool x);
 	virtual void Toggle ();
 public:
-	GPOut(unsigned char portNum, unsigned char pinNum);
+	GPOut(GPPORRTs portNum, unsigned char pinNum);
 	virtual void Set();
 	virtual void Clear();
 	virtual void SetSpeed(unsigned int speed);	
@@ -56,12 +89,12 @@ public:
 };
 															 
 															 
-const unsigned long led_mask[2] = {1UL << 0, 1UL << 1};      /*  GPIO P4.0, GPIO P4.1       */
+//const unsigned long led_mask[2] = {1UL << 0, 1UL << 1};      /*  GPIO P4.0, GPIO P4.1       */
 
-void LED_Off ();
-void LED_Init (void);
+//void LED_Off ();
+//void LED_Init (void);
 
-void LED_On () ;
+//void LED_On () ;
 #endif
 
 

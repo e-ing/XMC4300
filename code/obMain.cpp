@@ -10,7 +10,7 @@
 
 #include <stdio.h>
 #include <XMC4300.h>
-#include <GPOut.h>
+#include <GPIO.h>
 
 volatile unsigned long msTicks;                      /* counts 1ms timeTicks       */
 
@@ -43,15 +43,22 @@ int main (void) {
     while (1) __NOP();                          /* Capture error              */
   }
 
-  LED_Init();
-
-  while(1) {                                 /* Loop forever      */
-
-    LED_On ();                               /* Turn on LED'         */
-    Delay(500);                              /* Delay 500ms       */
-    LED_Off();                               /* Turn off LED '       */
-    Delay(500);                              /* Delay 500ms       */
-
+ // LED_Init();
+//	GPOut hbBit(GPP5, 3);
+	Abstract_oBit* hbBit = new GPOut (GPP5, 3);
+	bool x = true;
+  while(true)
+	{                               
+ //   LED_On ();
+		*hbBit = 1;
+    Delay(500);                              
+		!*hbBit;
+    //LED_Off();                               
+    Delay(500);                              
+		*hbBit << &x;
+		Delay(100);
+		*hbBit = false;
+		Delay(200);
   }
 
 }
