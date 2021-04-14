@@ -397,6 +397,11 @@
               <FileType>8</FileType>
               <FilePath>.\code\GPIO.cpp</FilePath>
             </File>
+            <File>
+              <FileName>SPI.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\SPI.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

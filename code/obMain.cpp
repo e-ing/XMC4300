@@ -35,6 +35,9 @@ void Delay (uint32_t dlyTicks)
 	}
 }
 
+
+
+
 int main (void) {
 
   SystemCoreClockUpdate();                      /* update SystemCoreClock     */
@@ -45,7 +48,9 @@ int main (void) {
 
  // LED_Init();
 //	GPOut hbBit(GPP5, 3);
-	Abstract_oBit* hbBit = new GPOut (GPP5, 3);
+	Abstract_oBit* hbBit = new GPOut (GPP2, 7);
+	Abstract_oBit* indBit = new GPOut (GPP2, 8);
+	Abstract_iBit* tst = new GPin (GPP2, 9);
 	bool x = true;
   while(true)
 	{                               
@@ -59,6 +64,7 @@ int main (void) {
 		Delay(100);
 		*hbBit = false;
 		Delay(200);
+		*indBit = !tst;	
   }
 
 }

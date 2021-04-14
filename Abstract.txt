@@ -14,3 +14,13 @@ How to test the application
 a. Import the project
 b. Compile and flash the application onto the device
 c. Run the application. 
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\RTE_Driver\SPI.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\RTE_Driver\UART.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\RTE_Driver\SPI.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\Device\XMClib\src\xmc_spi.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\Device\XMClib\src\xmc_uart.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\RTE_Driver\UART.h
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\Device\XMClib\inc\xmc_uart.h
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\Device\XMClib\src\xmc_spi.c
+D:\DC\!W\Prj\SW\XMC4300\snatchedFromKeil\XMClib\examples\XMC4300_series\SPI\SPI_EXTTRG_TRANSMIT\main.c
+C:\Users\chernovskiy\AppData\Local\Arm\Packs\Infineon\XMC4000_DFP\2.13.0\Device\XMClib\src\xmc_spi.c
