@@ -32,7 +32,7 @@ const unsigned long FIFO_SZ_32 = 5 << 24;
 const unsigned long FIFO_SZ_64 = 6 << 24;
 extern const unsigned long TX_FIFO_LIMIT = 1 << 8;
 
-
+USIC_CH_TypeDef* usics[] = {USIC0_CH0, USIC0_CH1, USIC1_CH0, USIC1_CH1}; 
 
 
 void DisableAllSlavesSel(USIC_CH_TypeDef* s)
@@ -54,9 +54,7 @@ void ActivateSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum)// num = 0-7;
 void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigned long frLen)
 {	
 	Abstract_iBit* MISO = new GPin (GPP2, 2);
-	SCU_CLK->CGATCLR0 = 1 << 11; //disable USIC0 clock gating;
-	
-	USIC_CH_TypeDef* usics[] = {USIC0_CH0, USIC0_CH1, USIC1_CH0, USIC1_CH1}; 
+	SCU_CLK->CGATCLR0 = 1 << 11; //disable USIC0 clock gating;	
 	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
 	spi->KSCFG = 3; // Module enable & bit protection
 //==Clock==
@@ -77,7 +75,16 @@ void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigne
 	spi->TBCTR &= 0xF8FFC0C0;
 	spi->TBCTR = FIFO_SZ_32 | TX_FIFO_LIMIT;
 	spi->CCR |= SPI_MODE;//usic start in SPI mode
+}
 
+void TxSPI(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned char len)
+{
+	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
+	for (int i = 0; i < len; ++i)
+	{
+		spi->IN[0] = data[i];
+	}
+}
 
 
 

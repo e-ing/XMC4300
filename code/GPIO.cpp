@@ -46,44 +46,59 @@ void GPin::SetSpeed(unsigned int speed)
 	//I'll think about it later
 }
 															 																													 
-bool GPOut::GetState()
+bool GPout::GetState()
 {
 	return ((port->IN & pinMaskOn) == 0)? false : true;
 }
 
-void GPOut::SetValue( bool x)
+void GPout::SetValue( bool x)
 {
 	port->OMR = (x == false)? pinMaskOff : pinMaskOn;
 }
-void GPOut::Toggle ()
+void GPout::Toggle ()
 {
 	port->OMR = pinMaskTogg;
 }
 
-GPOut::GPOut(GPPORRTs portNum, unsigned char pinNum) : 
+GPout::GPout(GPPORRTs portNum, unsigned char pinNum) : 
 port(GPIOs[portNum]), pin(pinNum)
 {
 	pinMaskOn = 1 << pin;
-	pinMaskOff = 1 <<(pin+16);
+	pinMaskOff = 1 << (pin+16);
 	pinMaskTogg = pinMaskOn | pinMaskOff;
 	port->IOCR[pin >> 2] &= ~(0xf8 << (8 * (pin & 3)));
 	port->IOCR[pin >> 2] |= 0x80 << (8 * (pin & 3));
 }
 
-void GPOut::Set()
+void GPout::Set()
 {
 	port->OMR = pinMaskOn;
 }
 
-void GPOut::Clear()
+void GPout::Clear()
 {
 	port->OMR = pinMaskOff;
 }
 
-void GPOut::SetSpeed(unsigned int speed)
+void GPout::SetSpeed(unsigned int speed)
 {
 	//I'll think about it later
 }	
+
+void GPout::SetPushPull()
+{
+	port->IOCR[pin >> 2] &= ~(0x40 << (8 * (pin & 3)));
+}
+
+void GPout::SetOpenDr()
+{
+	port->IOCR[pin >> 2] |= (0x40 << (8 * (pin & 3)));
+}
+
+void GPout::SetAltFn(unsigned  long funcN)
+{
+	port->IOCR[pin >> 2] |= (funcN << (8 * (pin & 3)));
+}
 
 
 

@@ -47,11 +47,30 @@ int main (void) {
   }
 
  // LED_Init();
-//	GPOut hbBit(GPP5, 3);
-	Abstract_oBit* hbBit = new GPOut (GPP2, 7);
-	Abstract_oBit* indBit = new GPOut (GPP2, 8);
+//	GPout hbBit(GPP5, 3);
+	Abstract_oBit* hbBit = new GPout (GPP2, 7);
+	Abstract_oBit* indBit = new GPout (GPP2, 8);
 	Abstract_iBit* tst = new GPin (GPP2, 9);
 	bool x = true;
+//SPI
+	Abstract_oBit* adCS = new GPout(GPP2, 3);
+	*adCS = 1;
+	Abstract_oBit* daCS = new GPout(GPP1, 13);
+	*daCS = 1;
+	Abstract_oBit* ldac = new GPout(GPP1, 14);
+	*ldac = 1;
+	Abstract_oBit* mosi = new GPout(GPP2, 5);
+	Abstract_oBit* sclk = new GPout(GPP2, 4);
+	Abstract_iBit* miso = new GPin(GPP2, 2);
+	
+	
+	adCS->SetAltFn(2);
+	daCS->SetAltFn(2);
+	mosi->SetAltFn(2);
+	sclk->SetAltFn(2);
+
+	
+	
   while(true)
 	{                               
  //   LED_On ();
@@ -104,14 +123,14 @@ int main (void) {
 
 //															 
 //															 //GPout and etc
-//class GPOut : public   Abstract_oBit
+//class GPout : public   Abstract_oBit
 //{
 //protected:
 //	virtual bool GetState();
 //	virtual void SetValue( bool x);
 //	virtual void Toggle ();
 //public:
-//	GPOut(unsigned char port, unsigned char pin);
+//	GPout(unsigned char port, unsigned char pin);
 //	virtual void Set();
 //	virtual void Clear();
 //	virtual void SetSpeed(unsigned int speed);
@@ -134,7 +153,7 @@ int main (void) {
 //		return *this;
 //	}
 
-//	virtual ~GPOut() {}
+//	virtual ~GPout() {}
 //};
 //															 
 //															 

@@ -124,6 +124,9 @@ public:
 		SetValue(val);
 		return *this;
 	} 
+	
+	virtual void StSt(bool st) {SetValue(st);} 
+	
 	virtual Abstract_oBit& operator = (int val) 
 	{
 		SetValue((val==0)? false : true);
@@ -134,6 +137,9 @@ public:
 		Toggle();
 		return *this;
 	}
+	virtual void SetPushPull() = 0;
+	virtual void SetOpenDr() = 0; 
+	virtual void SetAltFn(unsigned  long funcN) = 0;
 	virtual ~Abstract_oBit() {}
 };
 

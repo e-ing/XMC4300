@@ -68,7 +68,7 @@ public:
 };
 
 
-class GPOut : public   Abstract_oBit
+class GPout : public   Abstract_oBit
 {
 protected:
 	volatile PortGPIO* port;
@@ -81,11 +81,14 @@ protected:
 	virtual void SetValue( bool x);
 	virtual void Toggle ();
 public:
-	GPOut(GPPORRTs portNum, unsigned char pinNum);
+	GPout(GPPORRTs portNum, unsigned char pinNum);
 	virtual void Set();
 	virtual void Clear();
-	virtual void SetSpeed(unsigned int speed);	
-	virtual ~GPOut() {}
+	virtual void SetSpeed(unsigned int speed);
+	virtual void SetPushPull();
+	virtual void SetOpenDr();
+	virtual void SetAltFn(unsigned  long funcN);
+	virtual ~GPout() {}
 };
 															 
 															 

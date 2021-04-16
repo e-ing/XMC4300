@@ -32,6 +32,7 @@ void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigne
 void DisableAllSlavesSel();
 void SlaveSelMask(unsigned char mask);//mask 0 - 0xff b0 - slave0, b1 - slave1.. 1 - active, 0 - off.
 void ActivateSlaveSel(unsigned char slaveNum);// num = 0-7; 
+void TxSPI(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned char len);
 
 
 #endif
