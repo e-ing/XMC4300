@@ -398,9 +398,9 @@
               <FilePath>.\code\GPIO.cpp</FilePath>
             </File>
             <File>
-              <FileName>SPI.cpp</FileName>
+              <FileName>USIC.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>.\code\SPI.cpp</FilePath>
+              <FilePath>.\code\USIC.cpp</FilePath>
             </File>
           </Files>
         </Group>

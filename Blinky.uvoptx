@@ -234,7 +234,7 @@
       <GroupNumber>1</GroupNumber>
       <FileNumber>3</FileNumber>
       <FileType>8</FileType>
-      <tvExp>1</tvExp>
+      <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>.\code\GPIO.cpp</PathWithFileName>
@@ -249,8 +249,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\code\SPI.cpp</PathWithFileName>
-      <FilenameWithoutPath>SPI.cpp</FilenameWithoutPath>
+      <PathWithFileName>.\code\USIC.cpp</PathWithFileName>
+      <FilenameWithoutPath>USIC.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

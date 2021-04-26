@@ -1,4 +1,4 @@
-#include <SPI.h>
+#include <USIC.h>
 #include <GPIO.h>
 
 const unsigned char USICS_NUM = 2;
@@ -30,7 +30,12 @@ const unsigned long FIFO_SZ_8 = 3 << 24;
 const unsigned long FIFO_SZ_16 = 4 << 24;
 const unsigned long FIFO_SZ_32 = 5 << 24;
 const unsigned long FIFO_SZ_64 = 6 << 24;
-extern const unsigned long TX_FIFO_LIMIT = 1 << 8;
+const unsigned long TX_FIFO_LIMIT = 1 << 8;
+const unsigned long RX_FIFO_LIMIT = 30 << 8;
+const unsigned long FIFO_TRIG_EN = 1 << 15;
+const unsigned long FIFO_TRIG_MODE = 1 << 14;
+const unsigned long CLR_STD_TX_BF_EV = 1 << 8;
+const unsigned int  STD_TX_BF_EV_TR = 1 << 14;
 
 USIC_CH_TypeDef* usics[] = {USIC0_CH0, USIC0_CH1, USIC1_CH0, USIC1_CH1}; 
 
@@ -73,18 +78,72 @@ void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigne
 	spi->CCR = NO_PARITY;
 	spi->DX0CR = 0x40;// MISO = P22 = DX0A, rising edge is active	
 	spi->TBCTR &= 0xF8FFC0C0;
-	spi->TBCTR = FIFO_SZ_32 | TX_FIFO_LIMIT;
+	spi->TBCTR = TX_FIFO_LIMIT | FIFO_TRIG_MODE | FIFO_TRIG_EN ;	
+	spi->RBCTR = 32 |  RX_FIFO_LIMIT | FIFO_TRIG_MODE | FIFO_TRIG_EN;
+	spi->TBCTR |= FIFO_SZ_32;
+	spi->RBCTR |= FIFO_SZ_32;
 	spi->CCR |= SPI_MODE;//usic start in SPI mode
 }
 
-void TxSPI(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned char len)
+bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
+{
+	static const unsigned long MASK =  0x0000003F;
+	unsigned long ptrs =  usic->TRBPTR;
+	unsigned long top = ptrs &  MASK;
+	unsigned long bot = (ptrs >> 5) & MASK;
+	return ((top - bot) < 31)? false : true; 
+}	
+
+bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
+{
+}
+
+static void DoNoth()//USIC_CH_TypeDef* usic, unsigned short data)
+{
+}
+
+static void Tx(USIC_CH_TypeDef* usic, unsigned short data)
+{
+	usic->IN[0] = data;
+}
+
+
+static const unsigned int LIMIT = 10000000;
+//Works until it transmit or puts all the data in the FIFO or completes on a timeout
+//Returns the number of words actually transferred and puts to the FIFO
+unsigned int SyncTxSPI(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned int len)
 {
 	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
-	for (int i = 0; i < len; ++i)
+	signed int timeout = LIMIT;
+	int nTx;
+	for (nTx = 0; (nTx < len) && (timeout > 0) ; )
 	{
-		spi->IN[0] = data[i];
+		timeout = LIMIT;
+		while ( IsTxFIFOFilled(spi) && (--timeout > 0) )
+		{
+		}
+			//timeIsUp = (--timeout > 0)? false : true; 
+		(timeout == 0)? DoNoth() : Tx(spi, data[nTx++]); 
 	}
+	return nTx;
 }
+
+//Works until it fills the FIFO. 
+//After the buffer is filled, returns the number of words that could be transferred and placed in the FIFO.
+unsigned int AsyncTxSPI(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned int len)
+{
+	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
+	int nTx;
+	for (nTx = 0; (nTx < len) && !IsTxFIFOFilled(spi) ; )
+		Tx(spi, data[nTx++]); 
+	return nTx;
+}
+
+unsigned char RxSPI(unsigned char usicN, unsigned char chan, unsigned short* data)
+{
+	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];	
+}
+
 
 
 
