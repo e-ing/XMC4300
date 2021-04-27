@@ -48,15 +48,21 @@ public:
 class Abstract_iString : public  Abstract_iPort
 {
 protected:
-	virtual char* GetStr() = 0;
+	unsigned int sz;
+	char* bfr;
+	virtual unsigned int GetStr(char* buff) = 0;
 public:
 	virtual Abstract_iPort& operator >> (void* any)
 	{
-		any = GetStr();
+		sz = GetStr((char*) any);
 		return *this;
 	}
-	virtual operator char* () { return GetStr(); }
-	virtual int GetDataLen() = 0;
+	virtual operator char* ()
+ {
+		sz = GetStr(bfr);
+		return bfr;
+ }
+	virtual unsigned int GetDataLen() = 0;
 	virtual ~Abstract_iString() {}
 };
 
