@@ -135,7 +135,7 @@ void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsign
 	}
 }
 
-bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
+static bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
 {
 	static const unsigned long MASK =  0x0000003F;
 	unsigned long ptrs =  usic->TRBPTR;
@@ -145,7 +145,7 @@ bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
 	return (delta < 31)? false : true; 
 }	
 
-bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
+static bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
 {
 	return ( (usic->RBUFSR & RX_DATA_READY) == 0)? true : false; 
 }
@@ -173,42 +173,58 @@ static void Tx(USIC_CH_TypeDef* usic, unsigned short data)
 static const unsigned int LIMIT = 10000000;
 //Works until it transmit or puts all the data in the FIFO or completes on a timeout
 //Returns the number of words actually transferred and puts to the FIFO
-unsigned int SyncUSICTx(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned int len)
+unsigned int SyncUSICTx(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len)
 {
-	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
 	signed int timeout = LIMIT;
 	int nTx;
 	for (nTx = 0; (nTx < len) && (timeout > 0) ; )
 	{
 		timeout = LIMIT;
-		while ( IsTxFIFOFilled(spi) && (--timeout > 0) )
+		while ( IsTxFIFOFilled(usic) && (--timeout > 0) )
 		{
 		}
 			//timeIsUp = (--timeout > 0)? false : true; 
-		(timeout == 0)? DoNoth() : Tx(spi, data[nTx++]); 
+		(timeout == 0)? DoNoth() : Tx(usic, data[nTx++]); 
 	}
 	return nTx;
 }
 
 //Works until it fills the FIFO. 
 //After the buffer is filled, returns the number of words that could be transferred and placed in the FIFO.
-unsigned int ASyncUSICTx(unsigned char usicN, unsigned char chan, unsigned short* data, unsigned int len)
+unsigned int ASyncUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len)
 {
-	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
 	int nTx;
-	for (nTx = 0; (nTx < len) && !IsTxFIFOFilled(spi) ; )
-		Tx(spi, data[nTx++]); 
+	for (nTx = 0; (nTx < len) && !IsTxFIFOFilled(usic) ; )
+		Tx(usic, data[nTx++]); 
 	return nTx;
 }
 
-unsigned int USICRx(unsigned char usicN, unsigned char chan, unsigned short* data)
+unsigned int ASyncUSICTxb(USIC_CH_TypeDef* usic, const char* data, unsigned int len)
 {
-	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];	
+	int nTx;
+	for (nTx = 0; (nTx < len) && !IsTxFIFOFilled(usic) ; )
+		Tx(usic, data[nTx++]); 
+	return nTx;
+}
+
+unsigned int USICRxw(USIC_CH_TypeDef* usic, unsigned short* data)
+{
+	
 	unsigned int num = 0;
-	while (!IsRxFIFOEmpty(spi))
-		data[num++] = spi->OUTR;
+	while (!IsRxFIFOEmpty(usic))
+		data[num++] = usic->OUTR;
 	return num;
 }
+
+unsigned int USICRxb(USIC_CH_TypeDef* usic, char* data)
+{
+	
+	unsigned int num = 0;
+	while (!IsRxFIFOEmpty(usic))
+		data[num++] = (char) (usic->OUTR  & 0xff);
+	return num;
+}
+
 
 
 

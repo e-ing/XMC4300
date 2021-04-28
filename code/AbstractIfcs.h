@@ -44,7 +44,7 @@ public:
 	virtual ~Abstract_iInt() {}
 };
 
-//serial ports in and etc
+//Serial ports in and etc
 class Abstract_iString : public  Abstract_iPort
 {
 protected:
@@ -149,6 +149,29 @@ public:
 	virtual ~Abstract_oBit() {}
 };
 
+#include <list>
+using namespace std;
+//serial ports in and etc
+class Abstract_oString : public  Abstract_oPort
+{
+	protected:
+	unsigned int sz;
+	char* cashBf;
+	virtual const char* PushBuffer(const char* str) = 0;
+	virtual void SendStr(const char* buff)
+	{
+		
+	}
+public:
+	virtual Abstract_oPort& operator << (void* any)
+	{
+		SendStr((char*) any);
+		return *this;
+	}
+
+	virtual unsigned int GetBuffLen() = 0;
+	virtual ~Abstract_oString() {}
+};
 
 #endif
 
