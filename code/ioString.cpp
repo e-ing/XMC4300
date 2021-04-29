@@ -19,10 +19,27 @@ unsigned int InStr::GetDataLen()
 	return GetRxBuffLenght(uart);
 }
 
+//const string OutStr::PushBuffer(const string str)
+//{	
+//	unsigned int fullSz = str.size();
+//	const char* chStr = str.c_str();
+//	unsigned int realSz = ASyncUSICTxb(uart, chStr, fullSz);
+//	unsigned int remSz = fullSz - realSz;
+//	cashBf = str.substr(realSz);
+//	return cashBf;
+//}
+
 const char* OutStr::PushBuffer(const char* str)
 {	
-	unsigned int fullSz = strlen(str);
-	unsigned int realSz = ASyncUSICTxb(uart, str, fullSz);
-	unsigned int remSz = fullSz - realSz;
-	return (remSz > 0)? str + realSz : NULL;
+//	unsigned int fullSz = str.size();
+//	const char* chStr = str.c_str();
+//	unsigned int realSz = ASyncUSICTxb(uart, chStr, fullSz);
+//	unsigned int remSz = fullSz - realSz;
+//	cashBf = str.substr(realSz);
+	return cashBuff;
+}
+
+unsigned int OutStr::GetBuffLen()
+{
+	
 }

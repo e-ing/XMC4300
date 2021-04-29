@@ -1,6 +1,8 @@
 #ifndef USIC_H
 #define USIC_H
 #include <XMC4300.h>
+#include <ioString.h>
+#include <string.h>
 
 //BRG
 extern const unsigned long PASSIV_CLK_HIGH;
@@ -31,6 +33,8 @@ extern const unsigned long NO_PARITY;
 extern const unsigned long SPI_MODE;
 extern const unsigned long UART_MODE;
 //FIFO
+extern const unsigned long RX_FIFO_SZ;
+extern const unsigned long TX_FIFO_SZ;
 extern const unsigned long FIFO_SZ_2;
 extern const unsigned long FIFO_SZ_4;
 extern const unsigned long FIFO_SZ_8;
@@ -56,6 +60,7 @@ void SlaveSelMask(unsigned char mask);//mask 0 - 0xff b0 - slave0, b1 - slave1..
 void ActivateSlaveSel(unsigned char slaveNum);// num = 0-7; 
 
 unsigned int GetRxBuffLenght(USIC_CH_TypeDef* usic);
+unsigned int GetTxBuffLenght(USIC_CH_TypeDef* usic);
 
 //Works until it transmit or puts all the data in the FIFO or completes on a timeout
 //Returns the number of bytes actually transferred and puts to the FIFO

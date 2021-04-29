@@ -149,25 +149,45 @@ public:
 	virtual ~Abstract_oBit() {}
 };
 
+
+//serial ports in and etc
+
+#include <iostream>
+//#include <sstream> 
+//#include <stdlib.h>
+//#include <stdio.h>
+//#include <string.h>
 #include <list>
 using namespace std;
-//serial ports in and etc
-class Abstract_oString : public  Abstract_oPort
+
+class Abstract_oString
 {
 	protected:
 	unsigned int sz;
-	char* cashBf;
+	
+	list<int> bigBuff;
+	int* cash;
+	string bfCash;
+  const char* c_cashBuff;
+	char* cashBuff;
+	
+//	virtual const string PushBuffer(const string str) = 0;
 	virtual const char* PushBuffer(const char* str) = 0;
 	virtual void SendStr(const char* buff)
 	{
 		
 	}
 public:
-	virtual Abstract_oPort& operator << (void* any)
-	{
-		SendStr((char*) any);
-		return *this;
-	}
+//	virtual Abstract_oString& operator << (const string str);
+	virtual Abstract_oString& operator << (const char* str);
+	virtual Abstract_oString& operator << (int);
+	virtual Abstract_oString& operator << (unsigned long);
+	virtual Abstract_oString& operator << (double);
+	virtual Abstract_oString& operator << (bool);
+//	{
+//		SendStr((char*) any);
+//		return *this;
+//	}
 
 	virtual unsigned int GetBuffLen() = 0;
 	virtual ~Abstract_oString() {}

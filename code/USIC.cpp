@@ -29,6 +29,8 @@ const unsigned long NO_PARITY = 0;
 const unsigned long SPI_MODE = 1;
 const unsigned long UART_MODE = 2;
 //FIFO
+const unsigned long RX_FIFO_SZ = 32;
+const unsigned long TX_FIFO_SZ = 32;
 const unsigned long FIFO_SZ_2 = 1 << 24;
 const unsigned long FIFO_SZ_4 = 2 << 24;
 const unsigned long FIFO_SZ_8 = 3 << 24;
@@ -135,15 +137,7 @@ void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsign
 	}
 }
 
-static bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
-{
-	static const unsigned long MASK =  0x0000003F;
-	unsigned long ptrs =  usic->TRBPTR;
-	unsigned long top = ptrs &  MASK;
-	unsigned long bot = (ptrs >> 5) & MASK;
-	unsigned int delta = (top > bot)? (top - bot) : (bot - top);
-	return (delta < 31)? false : true; 
-}	
+
 
 static bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
 {
@@ -159,6 +153,22 @@ unsigned int GetRxBuffLenght(USIC_CH_TypeDef* usic)
 	unsigned int ret = (top > bot)? (top - bot) : (bot - top);
 	return ret; 
 }
+
+unsigned int GetTxBuffLenght(USIC_CH_TypeDef* usic)
+{
+	static const unsigned long MASK =  0x0000003F;
+	unsigned long ptrs =  usic->TRBPTR;
+	unsigned long top = ptrs &  MASK;
+	unsigned long bot = (ptrs >> 5) & MASK;
+	unsigned int delta = (top > bot)? (top - bot) : (bot - top);
+	return delta; 
+}
+
+static bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
+{
+	return ( GetTxBuffLenght (usic) < (TX_FIFO_SZ - 1) )? false : true; 
+}	
+
 
 static void DoNoth()//USIC_CH_TypeDef* usic, unsigned short data)
 {

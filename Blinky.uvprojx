@@ -407,6 +407,11 @@
               <FileType>8</FileType>
               <FilePath>.\code\ioString.cpp</FilePath>
             </File>
+            <File>
+              <FileName>AbstractIfcs.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\AbstractIfcs.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

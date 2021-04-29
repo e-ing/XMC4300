@@ -135,7 +135,7 @@ int main (void) {
 //	virtual void Clear();
 //	virtual void SetSpeed(unsigned int speed);
 //	
-//	virtual Abstract_oPort& operator << (void* any)
+//	virtual Abstract_oString& operator << (void* any)
 //	{
 //		SetState(any);
 //		return *this;

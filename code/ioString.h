@@ -2,6 +2,7 @@
 #define IO_STRING_H
 #include <AbstractIfcs.h>
 #include <USIC.h>
+//#include <list>
 
 
 //serial ports in and etc
@@ -25,6 +26,7 @@ class OutStr : public Abstract_oString
 {
 protected:
 	USIC_CH_TypeDef* uart;
+//	virtual const string PushBuffer(const string str);
 	virtual const char* PushBuffer(const char* str);
 //	virtual unsigned int SendStr(char* buff);
 public:
