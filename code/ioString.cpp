@@ -19,27 +19,23 @@ unsigned int InStr::GetDataLen()
 	return GetRxBuffLenght(uart);
 }
 
-//const string OutStr::PushBuffer(const string str)
-//{	
-//	unsigned int fullSz = str.size();
-//	const char* chStr = str.c_str();
-//	unsigned int realSz = ASyncUSICTxb(uart, chStr, fullSz);
-//	unsigned int remSz = fullSz - realSz;
-//	cashBf = str.substr(realSz);
-//	return cashBf;
-//}
 
-const char* OutStr::PushBuffer(const char* str)
+OutStr::OutStr ( unsigned char usicN, unsigned char chan,
+				  unsigned long wLen, unsigned long frLen)
+{
+	uart = usics[usicN * USICS_NUM + chan];
+	UARTini(usicN, chan, wLen, frLen);
+}
+
+void OutStr::PushBuffer(QuickStr &qst)
 {	
-//	unsigned int fullSz = str.size();
-//	const char* chStr = str.c_str();
-//	unsigned int realSz = ASyncUSICTxb(uart, chStr, fullSz);
-//	unsigned int remSz = fullSz - realSz;
-//	cashBf = str.substr(realSz);
-	return cashBuff;
+	unsigned int fullSz = qst.Size();
+	const char* chStr = qst;
+	unsigned int realSz = ASyncUSICTxb(uart, chStr, fullSz);
+	qst.CutOff(fullSz - realSz);
 }
 
 unsigned int OutStr::GetBuffLen()
 {
-	
+	return GetTxBuffLenght(uart);
 }

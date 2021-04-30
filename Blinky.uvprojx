@@ -412,6 +412,16 @@
               <FileType>8</FileType>
               <FilePath>.\code\AbstractIfcs.cpp</FilePath>
             </File>
+            <File>
+              <FileName>QuickString.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\code\QuickString.h</FilePath>
+            </File>
+            <File>
+              <FileName>AD5761.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\AD5761.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

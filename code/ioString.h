@@ -2,6 +2,8 @@
 #define IO_STRING_H
 #include <AbstractIfcs.h>
 #include <USIC.h>
+#include <QuickString.h>
+
 //#include <list>
 
 
@@ -27,10 +29,10 @@ class OutStr : public Abstract_oString
 protected:
 	USIC_CH_TypeDef* uart;
 //	virtual const string PushBuffer(const string str);
-	virtual const char* PushBuffer(const char* str);
+	virtual void PushBuffer(QuickStr &qst);
 //	virtual unsigned int SendStr(char* buff);
 public:
-	OutStr ( unsigned char usicN, unsigned char chan,
+	OutStr (unsigned char usicN, unsigned char chan,
 				  unsigned long wLen, unsigned long frLen);
 	virtual unsigned int GetBuffLen();
 	virtual ~OutStr() {}

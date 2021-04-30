@@ -1,5 +1,6 @@
 #ifndef ABSTRACT_IFCS_H
 #define ABSTRACT_IFCS_H
+#include  <QuickString.h>
 //v2-09.04.21
 //input
 class Abstract_iPort
@@ -149,41 +150,45 @@ public:
 	virtual ~Abstract_oBit() {}
 };
 
+class Abstract_oInt// : public  Abstract_oPort
+{
+protected:
+	int lastVal;
+	virtual void SetVal(int val) = 0;
+public:
+	virtual operator int () {return lastVal;}
+	virtual Abstract_oInt&  operator = (int val) { SetVal(val); return *this;}
+	virtual Abstract_oInt&  operator = (const Abstract_oInt &any) { *this = any.lastVal; return *this;}
+	virtual Abstract_oInt& operator += (int val) { SetVal(lastVal + val); return *this;}
+	virtual Abstract_oInt& operator -= (int val) { SetVal(lastVal + val); return *this;}
+	
+//	virtual Abstract
+};
+
 
 //serial ports in and etc
 
-#include <iostream>
+//#include <iostream>
 //#include <sstream> 
 //#include <stdlib.h>
 //#include <stdio.h>
 //#include <string.h>
+
+
+
+
+
 #include <list>
 using namespace std;
-
 class Abstract_oString
 {
-	protected:
-	unsigned int sz;
-	
-	list<int> bigBuff;
-	int* cash;
-	string bfCash;
-  const char* c_cashBuff;
-	char* cashBuff;
-	
-//	virtual const string PushBuffer(const string str) = 0;
-	virtual const char* PushBuffer(const char* str) = 0;
-	virtual void SendStr(const char* buff)
-	{
-		
-	}
+protected:
+	list<QuickStr> bigBuff;
+	QuickStr cash;
+	virtual void PushBuffer(QuickStr &qst) = 0;
 public:
 //	virtual Abstract_oString& operator << (const string str);
-	virtual Abstract_oString& operator << (const char* str);
-	virtual Abstract_oString& operator << (int);
-	virtual Abstract_oString& operator << (unsigned long);
-	virtual Abstract_oString& operator << (double);
-	virtual Abstract_oString& operator << (bool);
+	virtual Abstract_oString& operator << (QuickStr str);
 //	{
 //		SendStr((char*) any);
 //		return *this;

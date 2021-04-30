@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <XMC4300.h>
 #include <GPIO.h>
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <string.h>
+
 
 volatile unsigned long msTicks;                      /* counts 1ms timeTicks       */
 
@@ -40,6 +44,7 @@ void Delay (uint32_t dlyTicks)
 
 int main (void) {
 
+	
   SystemCoreClockUpdate();                      /* update SystemCoreClock     */
   if (SysTick_Config(SystemCoreClock / 1000)) 
 	{ 																						/* SysTick 1 msec interrupts  */
@@ -68,6 +73,7 @@ int main (void) {
 	daCS->SetAltFn(2);
 	mosi->SetAltFn(2);
 	sclk->SetAltFn(2);
+	
 
 	
 	

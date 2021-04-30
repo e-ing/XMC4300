@@ -2,7 +2,7 @@
 
 #include <AbstractIfcs.h>
 
-//using namespace std;
+using namespace std;
 
 //Abstract_oString& Abstract_oString::operator << (const string str)
 //{
@@ -19,54 +19,18 @@
 //	return *this;
 //}
 
-Abstract_oString& Abstract_oString::operator << (const char* str)
+Abstract_oString& Abstract_oString::operator << (QuickStr str)
 {
-	//string stStr = str;
-	//return *this << stStr;
-	
-		if( str != NULL )	
-			for	(int i = sizeof(str); i > 0; )
-				bigBuff.push_back(str[--i]);
-////		bigBuff.push_back(str);
-		if( !bigBuff.empty() )
-			if( sizeof(cashBuff) == 0  )
-			{
-				  
-					list<int>::iterator it = bigBuff.begin();
-					cash [0] = *it;
-					bigBuff.pop_front();
-					c_cashBuff = PushBuffer(cashBuff);
-			}
-	
+	if( str.NotEmpty() ) 
+		bigBuff.push_back(str);
+	if( !bigBuff.empty() )
+		if( cash.Empty() )
+		{
+			list<QuickStr>::iterator it = bigBuff.begin();
+			cash = *it;
+			bigBuff.pop_front();
+			PushBuffer(cash);
+		}
 	return *this;
 }
-Abstract_oString& Abstract_oString::operator << (int val)
-{
-//	ostringstream oStr;
-//	oStr << val;
-//	string stStr = oStr.str();
-//	return *this << stStr;
-	return *this;
-}
-Abstract_oString& Abstract_oString::operator << (unsigned long val)
-{
-//	ostringstream oStr;
-//	oStr << hex << val;
-//	string stStr = oStr.str();
-//	return *this << stStr;
-	return *this;
-}
-Abstract_oString& Abstract_oString::operator << (double val)
-{
-//	ostringstream oStr;
-//	oStr << val;
-//	string stStr = oStr.str();
-//	return *this << stStr;
-	return *this;
-}
-Abstract_oString& Abstract_oString::operator << (bool val)
-{
-//	string stStr = val? "TRUE" : "FALSE";
-//	return *this << stStr;
-	return *this;
-}
+
