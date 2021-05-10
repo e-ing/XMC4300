@@ -5,6 +5,8 @@
 #include <QuickString.h>
 
 //#include <list>
+
+
 //serial ports in and etc
 class InStr : public Abstract_iString
 {

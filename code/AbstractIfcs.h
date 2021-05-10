@@ -3,6 +3,9 @@
 #include  <QuickString.h>
 //v2-09.04.21
 //input
+
+class AbstrBitOut;
+
 class Abstract_iPort
 {
 public:
@@ -11,27 +14,34 @@ public:
 };
 
 //GPin and etc
-class Abstract_iBit : public  Abstract_iPort
+class AbstrBitIn : public  Abstract_iPort
 {
 protected:
-	virtual bool GetState() = 0;
+	virtual bool GetState() const = 0;
 public:
 	virtual Abstract_iPort& operator >> (void* any)
 	{
 		*((bool*)any) = GetState();
 		return *this;
 	}
-	virtual operator bool() { return GetState(); }
-	virtual operator int() { return (GetState() == false) ? 0 : 1; };
+	virtual operator bool() const { return GetState(); }
+	virtual operator int() const { return (GetState() == false) ? 0 : 1; };
 	virtual void PullH() = 0;
 	virtual void PullD() = 0;
-	virtual void PushPull() =0;
+	virtual void PushPull() = 0;
 	virtual void SetSpeed(unsigned int speed) = 0;
-	virtual ~Abstract_iBit() {}
+	
+	virtual bool operator == (bool val) const;// {return GetState() == val;}
+	virtual bool operator == (AbstrBitIn& other) const;//  {return GetState() == other.GetState();}
+	virtual bool operator == (AbstrBitOut& outP) const;//  {return GetState() == (bool) outP;}
+	virtual bool operator != (bool val) const;//  {return GetState() != val;}
+	virtual bool operator != (AbstrBitOut& outP) const;//  {return GetState() != (bool) outP;}
+	virtual bool operator != (AbstrBitIn& other) const;//  {return GetState() != other.GetState();}	
+	virtual ~AbstrBitIn() {}
 };
 
 //ADCs  and etc
-class Abstract_iInt : public  Abstract_iPort
+class AbstrIntIn : public  Abstract_iPort
 {
 protected:
 	virtual int GetValue() = 0;
@@ -42,7 +52,7 @@ public:
 		return *this;
 	}
 	virtual operator int() { return GetValue(); }
-	virtual ~Abstract_iInt() {}
+	virtual ~AbstrIntIn() {}
 };
 
 //Serial ports in and etc
@@ -104,63 +114,152 @@ public:
 };
 
 //GPout and etc
-class Abstract_oBit : public  Abstract_oPort
+
+class AbstrBitOut 
 {
-protected:
-	virtual bool GetState() = 0;
-	virtual void SetValue( bool x) =0;
-	virtual void Toggle () = 0;
-	virtual void SetState(void* state)
-	{
-		SetValue(*((bool*) state));
-	}
-public:
+protected:	
+	virtual bool GetState() const = 0;
+	virtual void SetState( bool val)  = 0;
+	virtual void Toggle() = 0;
 	virtual void Set() = 0;
 	virtual void Clear() = 0;
+public:
 	virtual void SetSpeed(unsigned int speed) = 0;
-	
-	virtual Abstract_oPort& operator << (void* any)
+	virtual void SetPushPull() = 0;
+	virtual void SetOpenDr() = 0; 
+	virtual void SetAltFn(unsigned  long funcN) = 0;
+
+	virtual AbstrBitOut& operator = (const AbstrBitOut& other) 
 	{
-		SetState(any);
+		SetState(other.GetState());
 		return *this;
 	}
-	virtual operator bool() { return GetState(); }
-	virtual operator int() { return (GetState() == false) ? 0 : 1; };
-	virtual Abstract_oBit&  operator = (bool val) 
+	
+	virtual AbstrBitOut& operator = (const AbstrBitIn& inPin) 
 	{
-		SetValue(val);
+		SetState((bool) inPin);
+		return *this;
+	}
+	
+	virtual AbstrBitOut& operator = (int val) 
+	{
+		SetState((val > 0)? true : false);
+		return *this;
+	}
+	
+	virtual AbstrBitOut&  operator = (bool val) 
+	{
+		SetState(val);
 		return *this;
 	} 
 	
-	virtual void StSt(bool st) {SetValue(st);} 
-	
-	virtual Abstract_oBit& operator = (int val) 
-	{
-		SetValue((val==0)? false : true);
-		return *this;
-	}
-	virtual Abstract_oBit& operator !()
+	virtual operator int() const { return (GetState() == false) ? 0 : 1; };
+	virtual operator bool() const { return GetState(); }
+	virtual bool operator == (bool val) const {return GetState() == val;}
+	virtual bool operator == (AbstrBitOut& other) const {return GetState() == other.GetState();}
+	virtual bool operator == (AbstrBitIn& inp) const {return GetState() == (bool) inp;}
+	virtual bool operator != (bool val) const {return GetState() != val;}
+	virtual bool operator != (AbstrBitOut& other) const {return GetState() != other.GetState();}
+	virtual bool operator != (AbstrBitIn& inp) const {return GetState() != (bool) inp;}
+	virtual AbstrBitOut& operator !()
 	{
 		Toggle();
 		return *this;
 	}
-	virtual void SetPushPull() = 0;
-	virtual void SetOpenDr() = 0; 
-	virtual void SetAltFn(unsigned  long funcN) = 0;
-	virtual ~Abstract_oBit() {}
+
+	virtual ~AbstrBitOut(){} 
+
 };
 
-class Abstract_oInt// : public  Abstract_oPort
+
+
+
+//class Abstract_oBit : public  Abstract_oPort
+//{
+//protected:
+//	virtual bool GetState() const {return true;};
+//	virtual void SetValue( bool x) = 0;
+//	virtual void Toggle () = 0;
+//	virtual void SetState(void* state)
+//	{
+//		SetValue(*((bool*) state));
+//	}
+//public:
+//	
+//	virtual void Set() = 0;
+//	virtual void Clear() = 0;
+//	virtual void SetSpeed(unsigned int speed) = 0;
+//	
+//	virtual Abstract_oPort& operator << (void* any)
+//	{
+//		SetState(any);
+//		return *this;
+//	}
+//	virtual operator bool() { return GetState(); }
+//	virtual operator int() { return (GetState() == false) ? 0 : 1; };
+//	virtual Abstract_oBit&  operator = (bool val) 
+//	{
+//		SetValue(val);
+//		return *this;
+//	} 
+//	
+////	virtual Abstract_oBit&  operator = (const Abstract_oBit &other) = 0;
+//	
+//	virtual void StSt(bool st) {SetValue(st);} 
+//	
+//	virtual Abstract_oBit& operator = (int val) 
+//	{
+//		SetValue((val==0)? false : true);
+//		return *this;
+//	}
+//	virtual Abstract_oBit& operator !()
+//	{
+//		Toggle();
+//		return *this;
+//	}
+//	virtual void SetPushPull() = 0;
+//	virtual void SetOpenDr() = 0; 
+//	virtual void SetAltFn(unsigned  long funcN) = 0;
+//	virtual ~Abstract_oBit() {}
+//};
+
+extern const char LOAD[];
+extern const char ASYNC_MODE[];
+extern const char SYNC_MODE[];
+
+class AbstrIntOut// : public  Abstract_oPort
 {
 protected:
 	int lastVal;
-	virtual void SetVal(int val) = 0;
 public:
-	virtual operator int () {return lastVal;}
-	virtual Abstract_oInt&  operator = (int val) { SetVal(val); return *this;}
-	virtual Abstract_oInt&  operator = (const Abstract_oInt &any) { *this = any.lastVal; return *this;}
-	virtual Abstract_oInt& operator += (int val) { SetVal(lastVal + val); return *this;}
-	virtual Abstract_oInt& operator -= (int val) { SetVal(lastVal + val); return *this;}
+	virtual bool SetVal(int val) = 0;
+	virtual operator int () const {return lastVal;}
+	virtual AbstrIntOut&  operator = (int val) { SetVal(val); return *this;}
+	virtual AbstrIntOut&  operator = (const char* cmd) = 0;
+	virtual AbstrIntOut&  operator = (const AbstrIntOut &any) { *this = any.lastVal; return *this;}
+	virtual AbstrIntOut& operator += (int val) { SetVal(lastVal + val); return *this;}
+	virtual AbstrIntOut& operator -= (int val) { SetVal(lastVal + val); return *this;}
+	
+	virtual bool operator == (int val) const {return lastVal == val;}
+	virtual bool operator == (AbstrIntOut& other) const {return lastVal == other.lastVal;}
+	virtual bool operator == (AbstrIntIn& inp) const {return lastVal  == (int) inp;}
+	virtual bool operator != (int val) const {return lastVal != val;}
+	virtual bool operator != (AbstrIntOut& other) const {return lastVal != other.lastVal;}
+	virtual bool operator != (AbstrIntIn& inp) const {return lastVal  != (int) inp;}
+	
+	virtual bool operator > (int val) const {return lastVal > val;}
+	virtual bool operator > (AbstrIntOut& other) const {return lastVal > other.lastVal;}
+	virtual bool operator > (AbstrIntIn& inp) const {return lastVal  > (int) inp;}
+	virtual bool operator >= (int val) const {return lastVal >= val;}
+	virtual bool operator >= (AbstrIntOut& other) const {return lastVal >= other.lastVal;}
+	virtual bool operator >= (AbstrIntIn& inp) const {return lastVal  >= (int) inp;}
+	virtual bool operator < (int val) const {return lastVal < val;}
+	virtual bool operator < (AbstrIntOut& other) const {return lastVal < other.lastVal;}
+	virtual bool operator < (AbstrIntIn& inp) const {return lastVal  < (int) inp;}
+	virtual bool operator <= (int val) const {return lastVal <= val;}
+	virtual bool operator <= (AbstrIntOut& other) const {return lastVal <= other.lastVal;}
+	virtual bool operator <= (AbstrIntIn& inp) const {return lastVal  <= (int) inp;}
+	
 	
 //	virtual Abstract
 };
@@ -197,6 +296,23 @@ public:
 	virtual unsigned int GetBuffLen() = 0;
 	virtual ~Abstract_oString() {}
 };
+
+//class Xyz
+//{
+//public:
+//	Xyz() {}
+////protected:
+//	void Any() {}
+//};
+
+//class Abc : public Xyz
+//{
+//private:
+//	int yyy;
+//	public:
+//		Abc () : Xyz() {yyy = 5;}
+//		void Some (Xyz &x) {x.Any();}	
+//};
 
 #endif
 

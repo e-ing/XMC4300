@@ -53,24 +53,20 @@ int main (void) {
 
  // LED_Init();
 //	GPout hbBit(GPP5, 3);
-	AbstrBitOut* hbBit = new GPout (GPP2, 7);
-	AbstrBitOut* indBit = new GPout (GPP2, 8);
-	AbstrBitIn* tst = new GPin (GPP2, 9);
+	Abstract_oBit* hbBit = new GPout (GPP2, 7);
+	Abstract_oBit* indBit = new GPout (GPP2, 8);
+	Abstract_iBit* tst = new GPin (GPP2, 9);
 	bool x = true;
 //SPI
-	AbstrBitOut* adCS = new GPout(GPP2, 3);
+	Abstract_oBit* adCS = new GPout(GPP2, 3);
 	*adCS = 1;
-	AbstrBitOut* daCS = new GPout(GPP1, 13);
+	Abstract_oBit* daCS = new GPout(GPP1, 13);
 	*daCS = 1;
-	AbstrBitOut* ldac = new GPout(GPP1, 14);
+	Abstract_oBit* ldac = new GPout(GPP1, 14);
 	*ldac = 1;
-	AbstrBitOut* mosi = new GPout(GPP2, 5);
-	AbstrBitOut* sclk = new GPout(GPP2, 4);
-	AbstrBitIn* miso = new GPin(GPP2, 2);
-	*sclk = *mosi = false;
-	*daCS = *miso;
-	AbstrBitOut& any = *daCS;
-	any = 0;
+	Abstract_oBit* mosi = new GPout(GPP2, 5);
+	Abstract_oBit* sclk = new GPout(GPP2, 4);
+	Abstract_iBit* miso = new GPin(GPP2, 2);
 	
 	
 	adCS->SetAltFn(2);
@@ -89,12 +85,11 @@ int main (void) {
 		!*hbBit;
     //LED_Off();                               
     Delay(500);                              
-		*hbBit = x;
+		*hbBit << &x;
 		Delay(100);
 		*hbBit = false;
 		Delay(200);
 		*indBit = !tst;	
-
   }
 
 }

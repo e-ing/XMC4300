@@ -12,7 +12,7 @@ void GPin::ResetPin()
 	port->IOCR[pin >> 2] &= ~(0xf8 << (8 * (pin & 3)));
 }	
 															 
-bool GPin::GetState() const
+bool GPin::GetState()
 {
 	return port->IN & pinMaskIn;
 }
@@ -46,16 +46,15 @@ void GPin::SetSpeed(unsigned int speed)
 	//I'll think about it later
 }
 															 																													 
-bool GPout::GetState() const
+bool GPout::GetState()
 {
 	return ((port->IN & pinMaskOn) == 0)? false : true;
 }
 
-void GPout::SetState( bool x)
+void GPout::SetValue( bool x)
 {
 	port->OMR = (x == false)? pinMaskOff : pinMaskOn;
 }
-
 void GPout::Toggle ()
 {
 	port->OMR = pinMaskTogg;
@@ -70,16 +69,6 @@ port(GPIOs[portNum]), pin(pinNum)
 	port->IOCR[pin >> 2] &= ~(0xf8 << (8 * (pin & 3)));
 	port->IOCR[pin >> 2] |= 0x80 << (8 * (pin & 3));
 }
-
-GPout::GPout(const GPout &other)
-{
-	port = other.port;
-	pin = other.pin;
-	pinMaskOn = other.pinMaskOn;
-	pinMaskOff = other.pinMaskOff;
-	pinMaskTogg = other.pinMaskTogg;
-}
-
 
 void GPout::Set()
 {

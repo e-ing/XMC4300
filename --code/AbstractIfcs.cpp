@@ -19,14 +19,6 @@ using namespace std;
 //	return *this;
 //}
 
-bool AbstrBitIn::operator == (bool val) const {return GetState() == val;}
-bool AbstrBitIn::operator == (AbstrBitIn& other) const {return GetState() == other.GetState();}
-bool AbstrBitIn::operator == (AbstrBitOut& outP) const {return GetState() == (bool) outP;}
-bool AbstrBitIn::operator != (bool val) const {return GetState() != val;}
-bool AbstrBitIn::operator != (AbstrBitOut& outP) const {return GetState() != (bool) outP;}
-bool AbstrBitIn::operator != (AbstrBitIn& other) const {return GetState() != other.GetState();}	
-
-
 Abstract_oString& Abstract_oString::operator << (QuickStr str)
 {
 	if( str.NotEmpty() ) 

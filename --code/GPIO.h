@@ -50,13 +50,13 @@ enum GPPORRTs
 extern volatile PortGPIO* GPIOs [GPPNUM];// = {(PortGPIO*) PORT0_BASE, (PortGPIO*) PORT1_BASE, (PortGPIO*) PORT2_BASE, (PortGPIO*) PORT3_BASE,
 															 //(PortGPIO*) PORT4_BASE, (PortGPIO*) PORT5_BASE, (PortGPIO*) PORT14_BASE, (PortGPIO*) PORT15_BASE};
 
-class GPin : public AbstrBitIn
+class GPin : public Abstract_iBit
 {
 protected:
 	volatile PortGPIO* port;
 	unsigned char pin;
 	unsigned long pinMaskIn;
-	virtual bool GetState() const ;
+	virtual bool GetState();
 	virtual void ResetPin();
 public:
 	GPin(GPPORRTs portNum, unsigned char pinNum);
@@ -68,7 +68,7 @@ public:
 };
 
 
-class GPout : public  AbstrBitOut
+class GPout : public   Abstract_oBit
 {
 protected:
 	volatile PortGPIO* port;
@@ -77,19 +77,17 @@ protected:
 	unsigned long pinMaskOff;
 	unsigned long pinMaskTogg;
 
-	virtual bool GetState() const;// = 0;
-	virtual void SetState( bool val);//  = 0;
-	virtual void Toggle();// = 0;
-	virtual void Set();// = 0;
-	virtual void Clear();// = 0;
-
+	virtual bool GetState();
+	virtual void SetValue( bool x);
+	virtual void Toggle ();
 public:
-	virtual void SetSpeed(unsigned int speed);// = 0;
-	virtual void SetPushPull();// = 0;
-	virtual void SetOpenDr();// = 0; 
-	virtual void SetAltFn(unsigned  long funcN);// = 0;
 	GPout(GPPORRTs portNum, unsigned char pinNum);
-	GPout(const GPout &other);
+	virtual void Set();
+	virtual void Clear();
+	virtual void SetSpeed(unsigned int speed);
+	virtual void SetPushPull();
+	virtual void SetOpenDr();
+	virtual void SetAltFn(unsigned  long funcN);
 	virtual ~GPout() {}
 };
 															 

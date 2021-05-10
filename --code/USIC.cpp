@@ -1,6 +1,5 @@
 #include <USIC.h>
 #include <GPIO.h>
-#include <Bits.h>
 
 const unsigned char USICS_NUM = 2;
 //BRG
@@ -8,7 +7,7 @@ const unsigned long PASSIV_CLK_HIGH = 30 << 1;
 //SCTR
 //const unsigned long WORD_LENGTH = 16;
 //const unsigned long FRAME_LENGTH = 1;
-const unsigned long SHIFT_CLK_ACTIV_LEVEL = 1 << 8;
+const unsigned long SHIFT_CLK_ACTIV_LEVEL = 1;
 const unsigned long MS_BIT_FIRST = 1;
 const unsigned long LS_BIT_FIRST = 0;
 const unsigned long PASSIV_DATA_LOW = 0;
@@ -46,7 +45,6 @@ const unsigned long CLR_STD_TX_BF_EV = 1 << 8;
 const unsigned long STD_TX_BF_EV_TR = 1 << 14;
 const unsigned long RX_DATA_READY = 1 << 14 | 1 << 13;
 
-const unsigned long CS_CODE[] = {B16, B17, B18, B19, B20, B21, B22, B23};
 USIC_CH_TypeDef* usics[] = {USIC0_CH0, USIC0_CH1, USIC1_CH0, USIC1_CH1}; 
 
 
@@ -66,14 +64,9 @@ void ActivateSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum)// num = 0-7;
 	s->PCR |= mask;
 }
 
-void OffSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum)// num = 0-7;
-{
-	unsigned long mask = 1 << (slaveNum + 16);
-	s->PCR &= ~mask;
-}
 void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigned long frLen)
 {	
-	AbstrBitIn* miso = new GPin (GPP2, 2);//usic0 ch1 DX0A
+	Abstract_iBit* miso = new GPin (GPP2, 2);//usic0 ch1 DX0A
 	SCU_CLK->CGATCLR0 = 1 << 11; //disable USIC0 clock gating;	
 	USIC_CH_TypeDef* spi = usics[usicN * USICS_NUM + chan];
 	spi->KSCFG = 3; // Module enable & bit protection
@@ -83,7 +76,7 @@ void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigne
 	spi->BRG &= 0xFFFC0083EF;
 	spi->BRG = PASSIV_CLK_HIGH | 0xf << 10;// | 0 << 16; //Time Quanta = 15, divider = 1;
 //==Shift control	
-	spi->SCTR = (wLen  - 1) << 24 | (frLen - 1) << 16 | SHIFT_CLK_ACTIV_LEVEL  | PASSIV_DATA_HIGH | MS_BIT_FIRST;
+	spi->SCTR = (wLen  - 1) << 24 | (frLen - 1) << 16 | SHIFT_CLK_ACTIV_LEVEL << 8 | PASSIV_DATA_HIGH | MS_BIT_FIRST;
 //Tx control
 	spi->TCSR = 1 << 12 | TX_START | SINGLE_SHOT_MODE;	
 //SPI protocol
@@ -103,7 +96,7 @@ void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigne
 void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigned long frLen)
 {	
 	bool isOk = true;
-	AbstrBitIn* rx = new GPin (GPP0, 0);//usic1 Ch1 DX0D
+	Abstract_iBit* rx = new GPin (GPP0, 0);//usic1 Ch1 DX0D
 	switch(usicN)
 	{
 		case 0: 
@@ -126,7 +119,7 @@ void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsign
 		uart->BRG &= 0xFFFC0083EF;
 		uart->BRG = PASSIV_CLK_HIGH | 0xf << 10;// | 0 << 16; //Time Quanta = 15, divider = 1;
 	//==Shift control	
-		uart->SCTR = (wLen  - 1) << 24 | (frLen - 1) << 16 | SHIFT_CLK_ACTIV_LEVEL | PASSIV_DATA_HIGH;// | MS_BIT_FIRST;
+		uart->SCTR = (wLen  - 1) << 24 | (frLen - 1) << 16 | SHIFT_CLK_ACTIV_LEVEL << 8 | PASSIV_DATA_HIGH;// | MS_BIT_FIRST;
 	//Tx control
 		uart->TCSR = 1 << 12 | TX_START | SINGLE_SHOT_MODE;	
 	//UART protocol	
@@ -146,12 +139,12 @@ void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsign
 
 
 
-static inline bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
+static bool IsRxFIFOEmpty(USIC_CH_TypeDef* usic)
 {
 	return ( (usic->RBUFSR & RX_DATA_READY) == 0)? true : false; 
 }
 
-unsigned  int GetRxBuffLenght(USIC_CH_TypeDef* usic)
+unsigned int GetRxBuffLenght(USIC_CH_TypeDef* usic)
 {
 	static const unsigned long MASK =  0x0000003F;
 	unsigned long ptrs =  usic->TRBPTR;
@@ -171,14 +164,9 @@ unsigned int GetTxBuffLenght(USIC_CH_TypeDef* usic)
 	return delta; 
 }
 
-static inline bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
+static bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
 {
 	return ( GetTxBuffLenght (usic) < (TX_FIFO_SZ - 1) )? false : true; 
-}	
-
-static inline bool IsTxBuffEmpty(USIC_CH_TypeDef* usic)
-{
-	return ( (usic->TCSR & B7) == 0 )? true : false; 
 }	
 
 
@@ -221,7 +209,6 @@ unsigned int ASyncUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, uns
 	return nTx;
 }
 
-
 unsigned int ASyncUSICTxb(USIC_CH_TypeDef* usic, const char* data, unsigned int len)
 {
 	int nTx;
@@ -241,34 +228,15 @@ unsigned int USICRxw(USIC_CH_TypeDef* usic, unsigned short* data)
 
 unsigned int USICRxb(USIC_CH_TypeDef* usic, char* data)
 {
+	
 	unsigned int num = 0;
 	while (!IsRxFIFOEmpty(usic))
 		data[num++] = (char) (usic->OUTR  & 0xff);
 	return num;
 }
 
-void FastUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len)
-{
-	int nTx;
-	for (nTx = 0; len > 0 ; --len )
-		Tx(usic, data[nTx++]); 
-}
 
 
-bool SPIdeviceConf(USIC_CH_TypeDef* usic, unsigned long frLen, unsigned long wLen, unsigned char csNum, CSpol csPolar, BitOrder btOrder)
-{
-//TX Buffer ready check
-	bool ret;
-	if(IsTxBuffEmpty(usic))
-	{
-		ret = true;
-		usic->PCR = 3 |  csPolar | CS_CODE[csNum];
-		usic->SCTR = btOrder | PASSIV_DATA_HIGH | SHIFT_CLK_ACTIV_LEVEL | frLen << 16 |  (wLen - 1) << 24;
-	}
-	else
-		ret = false;
-	return ret;
-}
 
 
 

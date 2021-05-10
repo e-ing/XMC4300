@@ -4,18 +4,6 @@
 #include <ioString.h>
 #include <string.h>
 
-enum CSpol
-{
-	CSPOL_HIGH = 0,
-	CSPOL_LOW = 1 << 3
-};
-
-enum BitOrder
-{
-	LSB_FIRST = 0,
-	MSB_FIRST = 1
-};
-
 //BRG
 extern const unsigned long PASSIV_CLK_HIGH;
 //SCTR
@@ -62,15 +50,14 @@ extern const unsigned long  STD_TX_BF_EV_TR;
 extern const unsigned long  STD_TX_BF_EV_TR;
 extern const unsigned long RX_DATA_READY;
 
-extern const unsigned long CS_CODE[];
+
 extern USIC_CH_TypeDef* usics[];
 
 void SPIini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigned long frLen );
 void UARTini(unsigned char usicN, unsigned char chan, unsigned long wLen, unsigned long frLen );
-void DisableAllSlavesSel(USIC_CH_TypeDef* s);
-void SlaveSelMask(USIC_CH_TypeDef* s, unsigned char mask);//mask 0 - 0xff b0 - slave0, b1 - slave1.. 1 - active, 0 - off.
-void ActivateSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum);// num = 0-7; 
-void OffSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum);// num = 0-7;
+void DisableAllSlavesSel();
+void SlaveSelMask(unsigned char mask);//mask 0 - 0xff b0 - slave0, b1 - slave1.. 1 - active, 0 - off.
+void ActivateSlaveSel(unsigned char slaveNum);// num = 0-7; 
 
 unsigned int GetRxBuffLenght(USIC_CH_TypeDef* usic);
 unsigned int GetTxBuffLenght(USIC_CH_TypeDef* usic);
@@ -84,7 +71,4 @@ unsigned int ASyncUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, uns
 unsigned int ASyncUSICTxb(USIC_CH_TypeDef* usic, const char* data, unsigned int len);
 unsigned int USICRxw(USIC_CH_TypeDef* usic, unsigned short* data);
 unsigned int USICRxb(USIC_CH_TypeDef* usic, char* data);
-bool SPIdeviceConf(USIC_CH_TypeDef* usic, unsigned long frLen, unsigned long wLen, unsigned char csNum, CSpol csPolar, BitOrder btOrder  );
-void  FastUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len);
-
 #endif
