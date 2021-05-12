@@ -176,7 +176,7 @@ static inline bool IsTxFIFOFilled(USIC_CH_TypeDef* usic)
 	return ( GetTxBuffLenght (usic) < (TX_FIFO_SZ - 1) )? false : true; 
 }	
 
-static inline bool IsTxBuffEmpty(USIC_CH_TypeDef* usic)
+bool IsTxBuffEmpty(USIC_CH_TypeDef* usic)
 {
 	return ( (usic->TCSR & B7) == 0 )? true : false; 
 }	
@@ -235,10 +235,16 @@ unsigned int USICRxw(USIC_CH_TypeDef* usic, unsigned short* data)
 	
 	unsigned int num = 0;
 	while (!IsRxFIFOEmpty(usic))
-		data[num++] = usic->OUTR;
+		data[num++] = usic->OUTR;	
 	return num;
 }
 
+void USICRxFIFOClean(USIC_CH_TypeDef* usic)
+{
+	unsigned short tmp;
+	while (!IsRxFIFOEmpty(usic))
+		tmp = usic->OUTR;		
+}
 unsigned int USICRxb(USIC_CH_TypeDef* usic, char* data)
 {
 	unsigned int num = 0;
@@ -252,7 +258,7 @@ void FastUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int
 	int nTx;
 	for (nTx = 0; len > 0 ; --len )
 		Tx(usic, data[nTx++]); 
-}
+} 
 
 
 bool SPIdeviceConf(USIC_CH_TypeDef* usic, unsigned long frLen, unsigned long wLen, unsigned char csNum, CSpol csPolar, BitOrder btOrder)
@@ -263,7 +269,7 @@ bool SPIdeviceConf(USIC_CH_TypeDef* usic, unsigned long frLen, unsigned long wLe
 	{
 		ret = true;
 		usic->PCR = 3 |  csPolar | CS_CODE[csNum];
-		usic->SCTR = btOrder | PASSIV_DATA_HIGH | SHIFT_CLK_ACTIV_LEVEL | frLen << 16 |  (wLen - 1) << 24;
+		usic->SCTR = btOrder | PASSIV_DATA_HIGH | SHIFT_CLK_ACTIV_LEVEL | (frLen - 1) << 16 |  (wLen - 1) << 24;
 	}
 	else
 		ret = false;

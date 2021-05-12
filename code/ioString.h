@@ -6,7 +6,7 @@
 
 //#include <list>
 //serial ports in and etc
-class InStr : public Abstract_iString
+class InStr : public AbstrStrIn
 {
 private:
 	static const int MAX_BUFF_SZ = 64;
@@ -22,7 +22,7 @@ public:
 };
 
 //serial ports in and etc
-class OutStr : public Abstract_oString
+class OutStr : public AbstrStrOut
 {
 protected:
 	USIC_CH_TypeDef* uart;

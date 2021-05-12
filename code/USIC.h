@@ -74,6 +74,7 @@ void OffSlaveSel(USIC_CH_TypeDef* s, unsigned char slaveNum);// num = 0-7;
 
 unsigned int GetRxBuffLenght(USIC_CH_TypeDef* usic);
 unsigned int GetTxBuffLenght(USIC_CH_TypeDef* usic);
+bool IsTxBuffEmpty(USIC_CH_TypeDef* usic);
 
 //Works until it transmit or puts all the data in the FIFO or completes on a timeout
 //Returns the number of bytes actually transferred and puts to the FIFO
@@ -83,6 +84,7 @@ unsigned int SyncUSICTx(USIC_CH_TypeDef* usic, const unsigned short* data, unsig
 unsigned int ASyncUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len);
 unsigned int ASyncUSICTxb(USIC_CH_TypeDef* usic, const char* data, unsigned int len);
 unsigned int USICRxw(USIC_CH_TypeDef* usic, unsigned short* data);
+void USICRxFIFOClean(USIC_CH_TypeDef* usic);
 unsigned int USICRxb(USIC_CH_TypeDef* usic, char* data);
 bool SPIdeviceConf(USIC_CH_TypeDef* usic, unsigned long frLen, unsigned long wLen, unsigned char csNum, CSpol csPolar, BitOrder btOrder  );
 void  FastUSICTxw(USIC_CH_TypeDef* usic, const unsigned short* data, unsigned int len);

@@ -11,40 +11,42 @@
 #include <stdio.h>
 #include <XMC4300.h>
 #include <GPIO.h>
+#include <TheTime.h>
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <string.h>
 
 
-volatile unsigned long msTicks;                      /* counts 1ms timeTicks       */
+//volatile unsigned long msTicks;                      /* counts 1ms timeTicks       */
 
-void SysTick_Handler(void) {
-  msTicks++;
-}
+//void SysTick_Handler(void)
+//{
+//  msTicks++;
+//}
 
-void Delay (uint32_t dlyTicks)
-{
-  unsigned long curTicks = msTicks;
-	unsigned long residue = 0xffffffff - curTicks;
-	if(residue >= dlyTicks)
-		while ((msTicks - curTicks) < dlyTicks)
-			__NOP();
-	else
-	{ 
-		unsigned long tail = dlyTicks - residue - 1;
-		while ( msTicks >= curTicks)
-			__NOP();
-		while (msTicks < tail)
-			__NOP();
-	}
-}
+//void Delay (uint32_t dlyTicks)
+//{
+//  unsigned long curTicks = msTicks;
+//	unsigned long residue = 0xffffffff - curTicks;
+//	if(residue >= dlyTicks)
+//		while ((msTicks - curTicks) < dlyTicks)
+//			__NOP();
+//	else
+//	{ 
+//		unsigned long tail = dlyTicks - residue - 1;
+//		while ( msTicks >= curTicks)
+//			__NOP();
+//		while (msTicks < tail)
+//			__NOP();
+//	}
+//}
+
 
 
 
 
 int main (void) {
 
-	
   SystemCoreClockUpdate();                      /* update SystemCoreClock     */
   if (SysTick_Config(SystemCoreClock / 1000)) 
 	{ 																						/* SysTick 1 msec interrupts  */
@@ -94,7 +96,6 @@ int main (void) {
 		*hbBit = false;
 		Delay(200);
 		*indBit = !tst;	
-
   }
 
 }
@@ -146,7 +147,7 @@ int main (void) {
 //	virtual void Clear();
 //	virtual void SetSpeed(unsigned int speed);
 //	
-//	virtual Abstract_oString& operator << (void* any)
+//	virtual AbstrStrOut& operator << (void* any)
 //	{
 //		SetState(any);
 //		return *this;

@@ -422,6 +422,16 @@
               <FileType>8</FileType>
               <FilePath>.\code\AD5761.cpp</FilePath>
             </File>
+            <File>
+              <FileName>TheTime.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\TheTime.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>AD8694.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\code\AD8694.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
