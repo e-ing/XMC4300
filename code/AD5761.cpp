@@ -5,12 +5,12 @@
 //	USIC_CH_TypeDef* spi;
 bool AD5761::SetVal(int val)
 {
-	bool ret =  WriteReg(val, WR_AND_UPDATE_RG);
+	bool ret =  WriteReg(WR_AND_UPDATE_RG, val);
 	lastVal = ret? val : lastVal;
 	return ret;
 }
 	
-bool AD5761::WriteReg(unsigned long val, Regs rgAdr)
+bool AD5761::WriteReg(Regs rgAdr, unsigned long val)
 {
 	//configure DAC CS
   //configure CS polarity
@@ -18,10 +18,9 @@ bool AD5761::WriteReg(unsigned long val, Regs rgAdr)
 	bool ret;
 	if(SPIdeviceConf(spi, FRAME_L, WORD_L, slN, CSPOL_LOW, MSB_FIRST))//TX Buffer ready check
 	{
-		unsigned short data[2];
+		unsigned short data[2] = {(unsigned short)(val >> 12) | rgAdr << 4,
+															(unsigned short)(val & 0xFFF)};
 		USICRxFIFOClean(spi);
-		data[0] = (unsigned short)(val >> 12) | rgAdr << 4;
-		data[1] = (unsigned short)(val & 0xFFF);
 		FastUSICTxw(spi, data, 2);
 		ret = true;
 	}
@@ -33,11 +32,11 @@ bool AD5761::WriteReg(unsigned long val, Regs rgAdr)
 bool AD5761::ReadReg(Regs rgAd, unsigned long &data)
 {
 	unsigned short rxData [2];
-	while ( ! WriteReg(0, rgAd))
+	while ( ! WriteReg(rgAd,  0))
 	{//wait Tx Buffer Ready and send cmd;
 	}
 	Sleep(0.002);
-	while ( ! WriteReg(0, NOP_RG))
+	while ( ! WriteReg(NOP_RG, 0))
 	{//wait Tx Buffer Ready and send empty frame;
 	}
 	while( ! IsTxBuffEmpty(spi))
@@ -62,7 +61,7 @@ pinLoad(loadPin)
 	OffSlaveSel(spi, slN);
 	pinLoad = false;// sync Mode
 
-	WriteReg (0x3A9, WR_CTL_RG);//+-10V operations, 5% overrange, 2 comliment code, to midscale after reset.
+	WriteReg (WR_CTL_RG, 0x3A9);//+-10V operations, 5% overrange, 2 comliment code, to midscale after reset.
 }
 
 AbstrIntOut&  AD5761::operator = (const char* cmd)

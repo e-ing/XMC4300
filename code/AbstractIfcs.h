@@ -61,17 +61,34 @@ public:
 	virtual ~AbstrIntIn() {}
 };
 
-template <class Tc, class Tel>
-	
+enum Success
+{
+	NOT_READY = 0,
+	DONE,
+	FATAL_ERR
+};
+
+template <class Tc, class Tel>	
 class I_ADC
 {
 protected:
-  Tc data;		
+	Success ready;
+  Tc data;	
 public:
+	I_ADC() : ready (NOT_READY) {}
 	virtual void CnvStart() = 0;
-	virtual bool IsCnvReadY() = 0;
-	Tel operator []  (unsigned int chan) const {return data[chan];}
-	operator Tc () const {return data;}
+	virtual Success IsCnvReady(){ return ready; }
+	Tel operator []  (unsigned int chan) 
+	{
+		return data[chan];
+		ready = NOT_READY;
+	}
+	operator Tc ()  
+	{
+		return data;
+		ready = NOT_READY;
+	}
+	virtual ~I_ADC();
 };
 
 //Serial ports in and etc
