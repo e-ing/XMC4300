@@ -6,6 +6,7 @@
 //#include <array>
 #include <Bits.h>
 
+#include <vector>
 class AD8694 : public I_ADC < vector <int> , int>
 {
 protected:
@@ -53,40 +54,24 @@ protected:
 		AUTO_CH = 0xA000
 	};
 	static const unsigned long ALARM_EN = B4;
-	static const unsigned long FULL_INFO = 3;//Bits 0-8 contain: channel adress, device address and inpet renge. SBAS686 p.54 table12
-	virtual int GetValue() const;
+	static const unsigned long FULL_INFO = 3; //Bits 0-8 contain: channel adress, device address and inpet renge. SBAS686 p.54 table12
 	static const unsigned long PR_WORD_L = 12;
 	static const unsigned long CMD_WORD_L = 16;
 	static const unsigned long CMD_FRAME_L = 34;
 
 	unsigned char slN;
 	USIC_CH_TypeDef* spi;
-	virtual bool WriteReg(Regs rg, unsigned long val );
-	virtual bool WriteCmd(Commandos cmd, unsigned long &rxData);
- 	virtual bool ReadReg(Regs rg, unsigned long &data);
 	
+	virtual bool WriteReg(Regs rg, unsigned long val );
+	//virtual bool WriteCmd(Commandos cmd, unsigned long &rxData);
+	virtual bool WriteCmd(Commandos cmd, vector<int>::iterator it);
+ 	virtual bool ReadReg(Regs rg, unsigned char &data);
+		
 public:
 	AD8694(unsigned char usicN, unsigned char chan, unsigned char sSelNum);
 	virtual void CnvStart();
-	virtual Success IsCnvReady();
+ virtual ~AD8694(){}
 };
-
-
-
-//class AD8694// : public //AbstrIntIn 
-//{
-//protected:
-//	virtual int GetValue() const;
-//	static const unsigned long WORD_L = 12;
-//	static const unsigned long FRAME_L = 24;
-//	unsigned char slN;
-//	USIC_CH_TypeDef* spi;
-////	virtual bool WriteReg(unsigned long val, Regs rgAdr);
-////	virtual bool ReadReg(Regs rgAd, unsigned long &data);
-//public:
-//	AD8694(unsigned char usicN, unsigned char chan, unsigned char sSelNum);
-//	virtual ~AD8694() {}
-//};
 
 
 #endif

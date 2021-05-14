@@ -80,15 +80,15 @@ public:
 	virtual Success IsCnvReady(){ return ready; }
 	Tel operator []  (unsigned int chan) 
 	{
-		return data[chan];
 		ready = NOT_READY;
+		return data[chan];
 	}
 	operator Tc ()  
 	{
-		return data;
 		ready = NOT_READY;
+		return data;	
 	}
-	virtual ~I_ADC();
+	virtual ~I_ADC() {}
 };
 
 //Serial ports in and etc
